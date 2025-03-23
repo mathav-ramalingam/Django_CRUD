@@ -3,65 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to PlaceX</title>
+    <title>Job Listings</title>
     <style>
-        /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .navbar {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #6079ac, #d7dcee);
+            background-color: #007bff;
             color: white;
-            text-align: center;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .links a {
-            text-decoration: none;
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 12px 20px;
+            padding: 10px 20px;
             border-radius: 8px;
-            transition: 0.3s ease-in-out;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
-
-        .links a:hover {
-            background: rgba(255, 255, 255, 0.4);
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .signup-login {
+            display: flex;
+            align-items: center;
+        }
+        .signup-login a {
+            color: white;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .job-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .apply-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        .close-button {
+            background-color: red;
+            color: white;
+            padding: 5px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>WELCOME TO PLACEX</h1>
-        <div class="links">
-            <a href="admin/">Admin</a>
-            <a href="job/">Student</a>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-brand">
+            WELCOME to placeX
         </div>
+        {% if user_logged_in %}
+            <div class="user-info">
+                <span>{{ user.username }}</span>
+                <img class="avatar" src="path/to/avatar.png" alt="Avatar">
+            </div>
+        {% else %}
+            <div class="signup-login">
+                <a href="/auth/login">Signup</a>
+                <a href="#">Login</a>
+            </div>
+        {% endif %}
     </div>
+
+    <h1>JOBS </h1>
+    {% for job in job_list %}
+        <div class="job-container">
+            <h2>{{ job.job_role }}</h2>
+            <p><strong>Company:</strong> {{ job.company_name }}</p>
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Required Skills:</strong> {{ job.required_skill }}</p>
+            <p><strong>Qualification:</strong> {{ job.qualification }}</p>
+            <button class="apply-button" onclick="openPopup('{{ job.job_role }}')">Apply</button>
+        </div>
+    {% endfor %}
+
+    <!-- Popup Form -->
+    <div id="popup-form" class="popup">
+        <h2>Apply for Job</h2>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required><br><br>
+
+            <label for="jobrole">Job Role:</label>
+            <input type="text" id="jobrole" name="jobrole" readonly><br><br>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br><br>
+
+            <button type="submit">Submit</button>
+            <button type="button" class="close-button" onclick="closePopup()">Close</button>
+        </form>
+    </div>
+
+    <script>
+        function openPopup(jobRole) {
+            document.getElementById("popup-form").style.display = "block";
+            document.getElementById("jobrole").value = jobRole;
+        }
+
+        function closePopup() {
+            document.getElementById("popup-form").style.display = "none";
+        }
+    </script>
+
 </body>
 </html>

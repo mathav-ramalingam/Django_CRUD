@@ -4,18 +4,14 @@ from rest_framework.response import Response
 from .models import *
 
 # Create your views here.
-def Home(request):
-    return render(request , 'home.html')
-
-
 @api_view(['GET','POST'])
 def Job_List(request):
 
     if request.method == 'GET':
         joblist = Joblist.objects.all()
         print(joblist)
-
-        return render(request , 'jobs.html' , {'job_list':joblist})
+ 
+        return render(request , 'home.html' ,{'job_list':joblist})
 
 
 @api_view(["GET","POST"])

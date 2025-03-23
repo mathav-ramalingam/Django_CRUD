@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AuthConfig(AppConfig):
+class CompanySideConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Auth'
+    name = 'company_side'
